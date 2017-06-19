@@ -6,9 +6,6 @@ from peewee import *
 aws_id = raw_input("Enter AWS Access Key ID: ")
 secret_key = raw_input("Enter AWS Secret Access Key: ")
 
-# aws_id = 'AKIAJ67OSJZZKLGB2HMA'
-# secret_key = '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'
-
 ec2 = boto3.client(
     'ec2',
     aws_access_key_id=aws_id,
