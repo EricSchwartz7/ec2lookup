@@ -2,9 +2,14 @@ import boto3
 import MySQLdb
 import peewee
 from peewee import *
+import getpass
 
 aws_id = raw_input("Enter AWS Access Key ID: ")
 secret_key = raw_input("Enter AWS Secret Access Key: ")
+
+db_name = raw_input("Enter database name: ")
+mysql_user = raw_input("Enter MySQL username: ")
+mysql_pass = getpass.getpass("Enter MySQL password: ")
 
 ec2 = boto3.client(
     'ec2',
@@ -15,7 +20,7 @@ ec2 = boto3.client(
 response = ec2.describe_instances()
 instances = response['Reservations'][0]['Instances']
 
-db = MySQLDatabase('ec2_info', user='root',passwd='guitar677')
+db = MySQLDatabase(db_name, user=mysql_user, passwd=mysql_pass)
 
 class Instance(peewee.Model):
     instanceId = peewee.CharField()
@@ -26,6 +31,8 @@ class Instance(peewee.Model):
         database = db
 
 db.connect()
+
+db.create_tables([Instance], True)
 
 for x in instances:
     new = Instance(instanceId=x['InstanceId'], instanceType=x['InstanceType'], zone=x['Placement']['AvailabilityZone'])
